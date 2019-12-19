@@ -1,0 +1,26 @@
+<mat-card>
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+  <form (submit)="onSaveProduct(productForm)" #productForm="ngForm" *ngIf="!isLoading">
+    <mat-form-field>
+      <input matInput type="text" placeholder="Product's Title" name="title" [ngModel]="product?.title" minlength="3"
+        #title="ngModel" required>
+      <mat-error *ngIf="title.invalid">Please enter the product's title!</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <textarea matInput rows="3" placeholder="Product's Descriptive" name="descriptive"
+        [ngModel]="product?.descriptive" #descriptive="ngModel" required></textarea>
+      <mat-error *ngIf="descriptive.invalid">Please enter the product's descriptive!</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput type="number" placeholder="Product's Price" name="price" #price="ngModel"
+        [ngModel]="product?.price" required>
+      <mat-error *ngIf="price.invalid">Please enter the product's price with two decimal places!</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput type="text" placeholder="Product's Seller" name="seller" #seller="ngModel"
+        [ngModel]="product?.seller" required>
+      <mat-error *ngIf="seller.invalid">Please enter the product's seller!</mat-error>
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit">Save Product</button>
+  </form>
+</mat-card>
