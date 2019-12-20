@@ -5,6 +5,7 @@ import { map } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
 import { log } from "util";
 import { Router } from "@angular/router";
+import { Cart } from "../carts/cart-list/cart.model";
 
 @Injectable({ providedIn: "root" })
 export class ProductsService {
@@ -24,6 +25,7 @@ export class ProductsService {
             return {
               id: product._id,
               title: product.title,
+              imagePath: product.imagePath,
               descriptive: product.descriptive,
               price: product.price,
               seller: product.seller
@@ -41,6 +43,7 @@ export class ProductsService {
     return this.http.get<{
       _id: string;
       title: string;
+      imagePath: string;
       descriptive: string;
       price: number;
       seller: string;
@@ -53,25 +56,32 @@ export class ProductsService {
 
   addProduct(
     title: string,
+    image: File,
     descriptive: string,
     price: number,
     seller: string
   ) {
-    const product: Product = {
-      id: null,
-      title: title,
-      descriptive: descriptive,
-      price: price,
-      seller: seller
-    };
+    const productData = new FormData();
+    productData.append("title", title);
+    productData.append("descriptive", descriptive);
+    // Cast the price to string
+    productData.append("price", price.toString());
+    productData.append("seller", seller);
+    productData.append("image", image, title);
     this.http
-      .post<{ message: string; productId: string }>(
+      .post<{ message: string; product: Product }>(
         "http://localhost:3000/api/products",
-        product
+        productData
       )
       .subscribe(responseData => {
-        const productId = responseData.productId;
-        product.id = productId;
+        const product: Product = {
+          id: responseData.product.id,
+          title: title,
+          imagePath: responseData.product.imagePath,
+          descriptive: descriptive,
+          price: price,
+          seller: seller
+        };
         this.products.push(product);
         this.productsUpdated.next([...this.products]);
         this.router.navigate(["/"]);
@@ -81,24 +91,46 @@ export class ProductsService {
   updateProduct(
     id: string,
     title: string,
+    image: File | string,
     descriptive: string,
     price: number,
     seller: string
   ) {
-    const product: Product = {
-      id: id,
-      title: title,
-      descriptive: descriptive,
-      price: price,
-      seller: seller
-    };
+    let productData: Product | FormData;
+    if (typeof image === "object") {
+      productData = new FormData();
+      productData.append("id", id);
+      productData.append("title", title);
+      productData.append("descriptive", descriptive);
+      // Cast the price to string
+      productData.append("price", price.toString());
+      productData.append("seller", seller);
+      productData.append("image", image, title);
+    } else {
+      productData = {
+        id: id,
+        title: title,
+        imagePath: image,
+        descriptive: descriptive,
+        price: price,
+        seller: seller
+      };
+    }
     this.http
-      .put("http://localhost:3000/api/products/" + id, product)
+      .put("http://localhost:3000/api/products/" + id, productData)
       .subscribe(response => {
         const updatedProducts = [...this.products];
         const oldProductIndex = updatedProducts.findIndex(
-          prod => prod.id === product.id
+          prod => prod.id === id
         );
+        const product: Product = {
+          id: id,
+          title: title,
+          imagePath: "",
+          descriptive: descriptive,
+          price: price,
+          seller: seller
+        };
         updatedProducts[oldProductIndex] = product;
         this.products = updatedProducts;
         this.productsUpdated.next([...this.products]);

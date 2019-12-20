@@ -30,6 +30,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.productsSub.unsubscribe();
   }
 
+  // addToCart(productId: string) {
+  //   this.productsService.addToCart(productId);
+  // }
+
   onDelete(productId: string) {
     this.productsService.deleteProduct(productId);
   }

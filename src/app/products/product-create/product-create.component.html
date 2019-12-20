@@ -1,25 +1,28 @@
 <mat-card>
   <mat-spinner *ngIf="isLoading"></mat-spinner>
-  <form (submit)="onSaveProduct(productForm)" #productForm="ngForm" *ngIf="!isLoading">
+  <form [formGroup]="form" (submit)="onSaveProduct()" *ngIf="!isLoading">
     <mat-form-field>
-      <input matInput type="text" placeholder="Product's Title" name="title" [ngModel]="product?.title" minlength="3"
-        #title="ngModel" required>
-      <mat-error *ngIf="title.invalid">Please enter the product's title!</mat-error>
+      <input matInput type="text" placeholder="Product's Title" formControlName="title">
+      <mat-error *ngIf="form.get('title').invalid">Please enter the product's title!</mat-error>
+    </mat-form-field>
+    <div>
+      <button mat-stroked-button type="button" (click)="filePicker.click()">Pick Image</button>
+      <input type="file" #filePicker (change)="onImagePicked($event)">
+    </div>
+    <div class="image-preview" *ngIf="imagePreview!=='' && imagePreview && form.get('image').valid">
+      <img [src]="imagePreview" [alt]="form.value.title">
+    </div>
+    <mat-form-field>
+      <textarea matInput rows="3" placeholder="Product's Descriptive" formControlName="descriptive"></textarea>
+      <mat-error *ngIf="form.get('descriptive').invalid">Please enter the product's descriptive!</mat-error>
     </mat-form-field>
     <mat-form-field>
-      <textarea matInput rows="3" placeholder="Product's Descriptive" name="descriptive"
-        [ngModel]="product?.descriptive" #descriptive="ngModel" required></textarea>
-      <mat-error *ngIf="descriptive.invalid">Please enter the product's descriptive!</mat-error>
+      <input matInput type="number" placeholder="Product's Price" formControlName="price">
+      <mat-error *ngIf="form.get('price').invalid">Please enter the product's price!</mat-error>
     </mat-form-field>
     <mat-form-field>
-      <input matInput type="number" placeholder="Product's Price" name="price" #price="ngModel"
-        [ngModel]="product?.price" required>
-      <mat-error *ngIf="price.invalid">Please enter the product's price with two decimal places!</mat-error>
-    </mat-form-field>
-    <mat-form-field>
-      <input matInput type="text" placeholder="Product's Seller" name="seller" #seller="ngModel"
-        [ngModel]="product?.seller" required>
-      <mat-error *ngIf="seller.invalid">Please enter the product's seller!</mat-error>
+      <input matInput type="text" placeholder="Product's Seller" formControlName="seller">
+      <mat-error *ngIf="form.get('seller').invalid">Please enter the product's seller!</mat-error>
     </mat-form-field>
     <button mat-raised-button color="primary" type="submit">Save Product</button>
   </form>

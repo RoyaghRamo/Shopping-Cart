@@ -5,6 +5,10 @@ const productSchema = mongoose.Schema({
     type: String,
     required: true
   },
+  imagePath: {
+    type: String,
+    required: true
+  },
   descriptive: {
     type: String,
     required: true
@@ -18,4 +22,5 @@ const productSchema = mongoose.Schema({
     required: true
   }
 });
+
 module.exports = mongoose.model('Product', productSchema);
