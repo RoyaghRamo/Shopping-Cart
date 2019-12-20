@@ -9,7 +9,8 @@ import {
   MatToolbarModule,
   MatExpansionModule,
   MatProgressSpinnerModule,
-  MatGridListModule
+  MatGridListModule,
+  MatPaginatorModule
 } from "@angular/material";
 
 import { AppRoutingModule } from "./app-routing.module";
@@ -29,7 +30,7 @@ import { HttpClientModule } from "@angular/common/http";
   imports: [
     AppRoutingModule,
     BrowserModule,
-    // FormsModule,
+    FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
     MatInputModule,
@@ -39,6 +40,7 @@ import { HttpClientModule } from "@angular/common/http";
     MatExpansionModule,
     MatGridListModule,
     MatProgressSpinnerModule,
+    MatPaginatorModule,
     HttpClientModule
   ],
   providers: [],

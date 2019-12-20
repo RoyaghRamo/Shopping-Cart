@@ -3,39 +3,47 @@ import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 import { map } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
-import { log } from "util";
 import { Router } from "@angular/router";
-import { Cart } from "../carts/cart-list/cart.model";
 
 @Injectable({ providedIn: "root" })
 export class ProductsService {
   private products: Product[] = [];
-  private productsUpdated = new Subject<Product[]>();
+  private productsUpdated = new Subject<{
+    products: Product[];
+    productCount: number;
+  }>();
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  getProducts() {
+  getProducts(productsPerPage: number, currentPage: number) {
+    const queryParams = `?pagesize=${productsPerPage}&page=${currentPage}`;
     this.http
-      .get<{ message: string; products: any }>(
-        "http://localhost:3000/api/products"
+      .get<{ message: string; products: any; maxProducts: number }>(
+        "http://localhost:3000/api/products" + queryParams
       )
       .pipe(
         map(productData => {
-          return productData.products.map(product => {
-            return {
-              id: product._id,
-              title: product.title,
-              imagePath: product.imagePath,
-              descriptive: product.descriptive,
-              price: product.price,
-              seller: product.seller
-            };
-          });
+          return {
+            products: productData.products.map(product => {
+              return {
+                id: product._id,
+                title: product.title,
+                imagePath: product.imagePath,
+                descriptive: product.descriptive,
+                price: product.price,
+                seller: product.seller
+              };
+            }),
+            maxProducts: productData.maxProducts
+          };
         })
       )
-      .subscribe(transformedProducts => {
-        this.products = transformedProducts;
-        this.productsUpdated.next([...this.products]);
+      .subscribe(transformedProductData => {
+        this.products = transformedProductData.products;
+        this.productsUpdated.next({
+          products: [...this.products],
+          productCount: transformedProductData.maxProducts
+        });
       });
   }
 
@@ -74,16 +82,6 @@ export class ProductsService {
         productData
       )
       .subscribe(responseData => {
-        const product: Product = {
-          id: responseData.product.id,
-          title: title,
-          imagePath: responseData.product.imagePath,
-          descriptive: descriptive,
-          price: price,
-          seller: seller
-        };
-        this.products.push(product);
-        this.productsUpdated.next([...this.products]);
         this.router.navigate(["/"]);
       });
   }
@@ -119,34 +117,11 @@ export class ProductsService {
     this.http
       .put("http://localhost:3000/api/products/" + id, productData)
       .subscribe(response => {
-        const updatedProducts = [...this.products];
-        const oldProductIndex = updatedProducts.findIndex(
-          prod => prod.id === id
-        );
-        const product: Product = {
-          id: id,
-          title: title,
-          imagePath: "",
-          descriptive: descriptive,
-          price: price,
-          seller: seller
-        };
-        updatedProducts[oldProductIndex] = product;
-        this.products = updatedProducts;
-        this.productsUpdated.next([...this.products]);
         this.router.navigate(["/"]);
       });
   }
 
   deleteProduct(productId: string) {
-    this.http
-      .delete("http://localhost:3000/api/products/" + productId)
-      .subscribe(() => {
-        const updatedProducts = this.products.filter(
-          product => product.id !== productId
-        );
-        this.products = updatedProducts;
-        this.productsUpdated.next([...this.products]);
-      });
+    return this.http.delete("http://localhost:3000/api/products/" + productId);
   }
 }

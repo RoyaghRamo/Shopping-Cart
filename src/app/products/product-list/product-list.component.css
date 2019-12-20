@@ -3,6 +3,11 @@
   margin-top: 1rem;
 }
 
+mat-form-field {
+  width: 100%;
+}
+
+
 mat-expansion-panel,
 mat-card {
   margin-top: 1rem;
@@ -21,11 +26,23 @@ mat-spinner {
   margin: auto;
 }
 
+mat-paginator {
+  margin-top: 1rem;
+}
+
 .product-details {
   margin-top: 1rem;
 }
 
+.product-image {
+  margin: auto;
+}
+
 .product-image img {
-  width: 50%;
+  margin: auto;
+  vertical-align: middle;
+  text-align: center;
+  height: 75%;
+  width: 75%;
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
 }

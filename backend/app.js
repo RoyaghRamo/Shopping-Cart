@@ -14,7 +14,9 @@ const connectionUrl = "mongodb://localhost:27017/shopping-cart";
 mongoose
   .connect(connectionUrl, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: true,
+    useCreateIndex: true
   })
   .then(() => {
     console.log("Connected to the database");

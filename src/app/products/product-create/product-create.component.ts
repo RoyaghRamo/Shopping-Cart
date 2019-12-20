@@ -36,15 +36,18 @@ export class ProductCreateComponent implements OnInit {
       price: new FormControl(null, { validators: [Validators.required] }),
       seller: new FormControl(null, { validators: [Validators.required] })
     });
+
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       if (paramMap.has("productId")) {
         this.mode = "edit";
         this.productId = paramMap.get("productId");
         this.isLoading = true;
+
         this.productsService
           .getProduct(this.productId)
           .subscribe(productData => {
             this.isLoading = false;
+
             this.product = {
               id: productData._id,
               title: productData.title,
@@ -53,6 +56,7 @@ export class ProductCreateComponent implements OnInit {
               price: productData.price,
               seller: productData.seller
             };
+
             this.form.setValue({
               title: this.product.title,
               image: this.product.imagePath,
