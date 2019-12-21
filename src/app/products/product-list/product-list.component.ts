@@ -12,7 +12,7 @@ import { PageEvent } from "@angular/material";
 export class ProductListComponent implements OnInit, OnDestroy {
   private productsSub: Subscription;
   products: Product[] = [];
-  searchTerm: string;
+  // searchTerm: string;
   isLoading = false;
   totalProducts = 0;
   productsPerPage = 2;

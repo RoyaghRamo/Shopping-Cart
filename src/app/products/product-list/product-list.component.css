@@ -36,13 +36,13 @@ mat-paginator {
 
 .product-image {
   margin: auto;
+  width: 100%;
 }
 
 .product-image img {
   margin: auto;
   vertical-align: middle;
   text-align: center;
-  height: 75%;
   width: 75%;
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
 }

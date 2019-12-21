@@ -26,6 +26,7 @@ import { HttpClientModule } from "@angular/common/http";
     ProductCreateComponent,
     ProductListComponent,
     HeaderComponent
+    // ProductFilterPipe
   ],
   imports: [
     AppRoutingModule,
